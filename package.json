@@ -1,0 +1,32 @@
+{
+  "name": "config-storage",
+  "version": "0.0.1",
+  "description": "Local configuration storage for your applications",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "init": "tsc --init"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vcgtz/config-storage.git"
+  },
+  "keywords": [
+    "local",
+    "storage",
+    "storage",
+    "config",
+    "configuration",
+    "json"
+  ],
+  "author": "Vicente Gutiérrez (@vcgtz)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vcgtz/config-storage/issues"
+  },
+  "homepage": "https://github.com/vcgtz/config-storage#readme",
+  "dependencies": {
+    "typescript": "^5.0.4"
+  }
+}
