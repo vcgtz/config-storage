@@ -57,13 +57,17 @@ class ConfigurationStorage {
   }
 
   public async del(key: string): Promise<void> {
-    await this.loadConfig();
-
-    if (this.data[key]) {
+    if ((await this.exists(key))) {
       delete this.data[key];
     }
 
     await this.writeConfig();
+  }
+
+  public async exists(key: string): Promise<boolean> {
+    await this.loadConfig();
+
+    return !!this.data[key]
   }
 
   private async existsFolder(path: string): Promise<boolean> {
