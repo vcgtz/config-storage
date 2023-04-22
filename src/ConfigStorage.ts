@@ -2,27 +2,36 @@ import os from 'os';
 import path from 'path';
 import fsPromises from 'fs/promises'
 
-class Config {
+interface ConfigurationStorage {
+  [key: string]: string;
+}
+
+class ConfigStorage {
   private homedirPath: string;
   private configFilePath: string;
   private configFolderName: string;
   private configFolderPath: string;
   private configFileName: string;
+  private data: ConfigurationStorage;
 
-  constructor(configFolderName?: string) {
+  private constructor(configFolderName?: string) {
     this.homedirPath = os.homedir();
     this.configFolderName = configFolderName ? configFolderName : '.config-storage';
     this.configFileName = 'config.json';
     this.configFolderPath = path.join(this.homedirPath, this.configFolderName);
     this.configFilePath = path.join(this.configFolderPath, this.configFileName);
+    this.data = {};
   }
 
   get path(): string {
     return this.configFilePath;
   }
 
-  set path(value: string) {
-    this.configFilePath = value;
+  public async getConfigStorage(configFolderName?: string): Promise<ConfigStorage> {
+    const config: ConfigStorage = new ConfigStorage(configFolderName);
+    await config.initialLoading();
+
+    return config;
   }
 
   private async existsPath(path: string): Promise<boolean> {
@@ -54,6 +63,31 @@ class Config {
       throw err;
     }
   }
+
+  private async loadConfig(): Promise<void> {
+    try {
+      const data: string = await fsPromises.readFile(this.configFilePath, 'utf-8');
+      this.data = JSON.parse(data);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  private async initialLoading(): Promise<void> {
+    try {
+      if (!(await this.existsPath(this.configFolderPath))) {
+        this.createConfigFolder();
+      }
+  
+      if (!(await this.existsPath(this.configFilePath))) {
+        this.createConfigFile();
+      }
+  
+      await this.loadConfig();
+    } catch (err) {
+      throw err;
+    }
+  }
 };
 
-export default Config;
+export default ConfigStorage;

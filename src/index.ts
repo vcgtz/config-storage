@@ -1,3 +1,3 @@
-import Config from './Config';
+import ConfigStorage from './ConfigStorage';
 
-export default Config;
+export default ConfigStorage;
