@@ -2,17 +2,17 @@ import os from 'os';
 import path from 'path';
 import fsPromises from 'fs/promises'
 
-interface ConfigurationStorage {
+interface Configuration {
   [key: string]: string;
 }
 
-class ConfigStorage {
+class ConfigurationStorage {
   private homedirPath: string;
   private configFilePath: string;
   private configFolderName: string;
   private configFolderPath: string;
   private configFileName: string;
-  private data: ConfigurationStorage;
+  private data: Configuration;
 
   private constructor(configFolderName?: string) {
     this.homedirPath = os.homedir();
@@ -23,18 +23,22 @@ class ConfigStorage {
     this.data = {};
   }
 
-  get path(): string {
-    return this.configFilePath;
-  }
-
-  public async getConfigStorage(configFolderName?: string): Promise<ConfigStorage> {
-    const config: ConfigStorage = new ConfigStorage(configFolderName);
+  static async getStorage(configFolderName?: string): Promise<ConfigurationStorage> {
+    const config: ConfigurationStorage = new ConfigurationStorage(configFolderName);
     await config.initialLoading();
 
     return config;
   }
 
-  private async existsPath(path: string): Promise<boolean> {
+  get path(): string {
+    return this.configFilePath;
+  }
+
+  public getAll(): Configuration {
+    return this.data;
+  }
+
+  private async existsFolder(path: string): Promise<boolean> {
     try {
       await fsPromises.stat(path);
 
@@ -48,6 +52,15 @@ class ConfigStorage {
     }
   }
 
+  private async existsFile(path: string): Promise<boolean> {
+    try {
+      await fsPromises.access(path);
+      return true;
+    } catch (err) {
+      return false;
+    }
+  }
+
   private async createConfigFolder(): Promise<void> {
     try {
       await fsPromises.mkdir(this.configFolderPath, { recursive: true });
@@ -58,7 +71,7 @@ class ConfigStorage {
 
   private async createConfigFile(): Promise<void> {
     try {
-      await fsPromises.writeFile(this.configFolderPath, JSON.stringify({}, null, 4));
+      await fsPromises.writeFile(this.configFilePath, JSON.stringify({}, null, 4));
     } catch (err) {
       throw err;
     }
@@ -75,12 +88,12 @@ class ConfigStorage {
 
   private async initialLoading(): Promise<void> {
     try {
-      if (!(await this.existsPath(this.configFolderPath))) {
-        this.createConfigFolder();
+      if (!(await this.existsFolder(this.configFolderPath))) {
+        await this.createConfigFolder();
       }
-  
-      if (!(await this.existsPath(this.configFilePath))) {
-        this.createConfigFile();
+
+      if (!(await this.existsFile(this.configFilePath))) {
+        await this.createConfigFile();
       }
   
       await this.loadConfig();
@@ -90,4 +103,4 @@ class ConfigStorage {
   }
 };
 
-export default ConfigStorage;
+export default ConfigurationStorage;

@@ -1,3 +1,3 @@
-import ConfigStorage from './ConfigStorage';
+import ConfigurationStorage from './ConfigurationStorage';
 
-export default ConfigStorage;
+export default ConfigurationStorage;
