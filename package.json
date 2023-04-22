@@ -27,6 +27,7 @@
   },
   "homepage": "https://github.com/vcgtz/config-storage#readme",
   "dependencies": {
+    "@types/node": "^18.15.13",
     "typescript": "^5.0.4"
   }
 }

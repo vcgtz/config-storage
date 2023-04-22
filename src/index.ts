@@ -1,3 +1,3 @@
-const message: string = 'Hello!';
+import Config from './Config';
 
-console.log(message);
+export default Config;
