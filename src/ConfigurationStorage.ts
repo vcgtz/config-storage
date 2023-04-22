@@ -34,8 +34,36 @@ class ConfigurationStorage {
     return this.configFilePath;
   }
 
-  public getAll(): Configuration {
+  public async getAll(): Promise<Configuration> {
+    await this.loadConfig();
+
     return this.data;
+  }
+
+  public async get(key: string): Promise<string | null> {
+    await this.loadConfig();
+
+    if (this.data[key]) {
+      return this.data[key];
+    }
+
+    return null;
+  }
+
+  public async set(key: string, value: string): Promise<void> {
+    this.data[key] = value;
+
+    await this.writeConfig();
+  }
+
+  public async del(key: string): Promise<void> {
+    await this.loadConfig();
+
+    if (this.data[key]) {
+      delete this.data[key];
+    }
+
+    await this.writeConfig();
   }
 
   private async existsFolder(path: string): Promise<boolean> {
@@ -71,7 +99,7 @@ class ConfigurationStorage {
 
   private async createConfigFile(): Promise<void> {
     try {
-      await fsPromises.writeFile(this.configFilePath, JSON.stringify({}, null, 4));
+      await this.writeConfig();
     } catch (err) {
       throw err;
     }
@@ -81,6 +109,14 @@ class ConfigurationStorage {
     try {
       const data: string = await fsPromises.readFile(this.configFilePath, 'utf-8');
       this.data = JSON.parse(data);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  private async writeConfig(): Promise<void> {
+    try {
+      await fsPromises.writeFile(this.configFilePath, JSON.stringify(this.data, null, 4));
     } catch (err) {
       throw err;
     }
