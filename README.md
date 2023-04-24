@@ -20,11 +20,16 @@ import ConfigurationStorage from 'config-storage';
 ```
 
 ### :large_blue_circle: Initialization
-#### `ConfigurationStorage.getStorage(folderName: string)`
-You can pass as an argument the name of the folder where your configuration will be saved.
-
+#### `ConfigurationStorage.getStorage(storageName: string)`
 ```js
-const config = await ConfigurationStorage.getStorage('.my_application');
+const config = await ConfigurationStorage.getStorage('my_application');
+```
+
+Passing `storageName` allows you to identify your storage with a key. This also means that you can have as many storages as you want.
+```js
+const mainConfig = await ConfigurationStorage.getStorage('main_configuration');
+const userConfig = await ConfigurationStorage.getStorage('user_configuration');
+const paymentConfig = await ConfigurationStorage.getStorage('payment_configuration');
 ```
 
 ### :large_blue_circle: Storing values
