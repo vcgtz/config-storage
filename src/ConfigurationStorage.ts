@@ -14,16 +14,16 @@ class ConfigurationStorage {
   private configFileName: string;
   private data: Configuration;
 
-  private constructor(storageName?: string) {
+  private constructor(storageName: string) {
     this.homedirPath = os.homedir();
-    this.configFolderName = storageName ? this.parseFolderName(storageName) : '.config-storage';
+    this.configFolderName = this.parseFolderName(storageName);
     this.configFileName = 'config.json';
     this.configFolderPath = path.join(this.homedirPath, this.configFolderName);
     this.configFilePath = path.join(this.configFolderPath, this.configFileName);
     this.data = {};
   }
 
-  static async getStorage(configFolderName?: string): Promise<ConfigurationStorage> {
+  static async getStorage(configFolderName: string): Promise<ConfigurationStorage> {
     const config: ConfigurationStorage = new ConfigurationStorage(configFolderName);
     await config.initialLoading();
 
@@ -143,7 +143,7 @@ class ConfigurationStorage {
   }
 
   private parseFolderName(storageName: string): string {
-    return storageName
+    return '.' + storageName
       .trim()
       .replace(/\s{2,}/g, ' ')
       .replace(' ', '-')
