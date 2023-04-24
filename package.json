@@ -1,6 +1,6 @@
 {
   "name": "config-storage",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Local configuration storage for your applications",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
