@@ -14,9 +14,9 @@ class ConfigurationStorage {
   private configFileName: string;
   private data: Configuration;
 
-  private constructor(configFolderName?: string) {
+  private constructor(storageName?: string) {
     this.homedirPath = os.homedir();
-    this.configFolderName = configFolderName ? configFolderName : '.config-storage';
+    this.configFolderName = storageName ? this.parseFolderName(storageName) : '.config-storage';
     this.configFileName = 'config.json';
     this.configFolderPath = path.join(this.homedirPath, this.configFolderName);
     this.configFilePath = path.join(this.configFolderPath, this.configFileName);
@@ -140,6 +140,15 @@ class ConfigurationStorage {
     } catch (err) {
       throw err;
     }
+  }
+
+  private parseFolderName(storageName: string): string {
+    return storageName
+      .trim()
+      .replace(/\s{2,}/g, ' ')
+      .replace(' ', '-')
+      .replace(/[^\w\d-]/g, '')
+      .toLowerCase();
   }
 };
 
