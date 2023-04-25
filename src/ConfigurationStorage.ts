@@ -40,18 +40,24 @@ class ConfigurationStorage {
     return this.data;
   }
 
-  public async get(key: string): Promise<string | null> {
-    await this.loadConfig();
-
-    if (this.data[key]) {
-      return this.data[key];
+  public async get(key: string): Promise<any> {
+    if (!this.isValidKey(key)) {
+      throw new Error('Key invalid');
     }
 
-    return null;
+    await this.loadConfig();
+    const keys: string[] = key.split('.');
+
+    return this.getDeeperValue(keys, this.data);
   }
 
-  public async set(key: string, value: string): Promise<void> {
-    this.data[key] = value;
+  public async set(key: string, value: any): Promise<void> {
+    if (!this.isValidKey(key)) {
+      throw new Error('Key invalid');
+    }
+
+    const keys: string[] = key.split('.');
+    this.setDeeperValue(keys, this.data, value);
 
     await this.writeConfig();
   }
@@ -149,6 +155,40 @@ class ConfigurationStorage {
       .replace(' ', '-')
       .replace(/[^\w\d-]/g, '')
       .toLowerCase();
+  }
+
+  private isValidKey(key: string): boolean {
+    if (key.startsWith('.') || key.endsWith('.')) {
+      return false;
+    }
+
+    return true;
+  }
+
+  private getDeeperValue(keys: string[], obj: any): any {
+    const [currentKey, ...keyRest] = keys;
+
+    if (typeof(obj) === 'object' && obj[currentKey] && keyRest.length) {
+      return this.getDeeperValue(keyRest, obj[currentKey]);
+    } else if (obj[currentKey] !== undefined && obj[currentKey] !== null) {
+      return obj[currentKey];
+    } else {
+      return null;
+    }
+  }
+
+  private setDeeperValue(keys: string[], obj: any, value: any): any {
+    const [currentKey, ...keyRest] = keys;
+
+    if (keyRest.length) {
+      if (typeof(obj[currentKey]) !== 'object') {
+        obj[currentKey] = {};
+      }
+  
+      this.setDeeperValue(keyRest, obj[currentKey], value);
+    } else {
+      obj[currentKey] = value;
+    }
   }
 };
 
