@@ -55,8 +55,8 @@ await config.set('MAIN_KEY', 'GiQTZ8yKBcfuEnTFbs3TvcqoAsF6owLu');
 ```
 
 ### :large_blue_circle: Retrieving values
-#### `get(key: string): Promise<any>`
-It returns `null` if the key doesn't exist.
+#### `get(key: string, defaultValue: any = null): Promise<any>`
+It returns `defaultValue` if the key doesn't exist.
 ```js
 await config.get('MAIN_KEY');
 ```

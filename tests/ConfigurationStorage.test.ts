@@ -140,6 +140,26 @@ describe('Testing storing and retrieving data', () => {
     expect(await storage.get(nestedKey3)).toBe(nestedValue3);
   });
 
+  test('retrieving a default value', async () => {
+    const key: string = 'message';
+    const value: string = 'Hello World!';
+
+    await storage.set(key, value);
+
+    expect(await storage.get('message2', 'key does not exist')).toBe('key does not exist');
+  });
+
+  test('retrieving a nested default value', async () => {
+    const key: string = 'message';
+    const value: object = {
+      nestedMessage: 'Hello World!',
+    };
+
+    await storage.set(key, value);
+
+    expect(await storage.get('message.nestedMessage2', 666)).toBe(666);
+  });
+
   afterAll(async () => {
     await fsPromises.unlink(storage.path);
   });

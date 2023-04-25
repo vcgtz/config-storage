@@ -57,20 +57,26 @@ class ConfigurationStorage {
   }
 
   /**
-   * Get a specific value according a given key.
+   * Get a specific value according a given key. If the key doesn't exist, it returns the defaultValue.
    * 
-   * @param {key} key
+   * @param {string} key
+   * @param {any} defaultValue
    * @returns {Promise<any>}
    */
-  public async get(key: string): Promise<any> {
+  public async get(key: string, defaultValue: any = null): Promise<any> {
     if (!this.isValidKey(key)) {
       throw new Error('Invalid key');
     }
 
     await this.loadConfig();
     const keys: string[] = key.split('.');
+    const value: any = this.getDeeperValue(keys, this.data);
 
-    return this.getDeeperValue(keys, this.data);
+    if (value !== null) {
+      return value;
+    }
+
+    return defaultValue;
   }
 
   /**
