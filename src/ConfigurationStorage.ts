@@ -42,7 +42,7 @@ class ConfigurationStorage {
 
   public async get(key: string): Promise<any> {
     if (!this.isValidKey(key)) {
-      throw new Error('Key invalid');
+      throw new Error('Invalid key');
     }
 
     await this.loadConfig();
@@ -53,7 +53,7 @@ class ConfigurationStorage {
 
   public async set(key: string, value: any): Promise<void> {
     if (!this.isValidKey(key)) {
-      throw new Error('Key invalid');
+      throw new Error('Invalid key');
     }
 
     const keys: string[] = key.split('.');
@@ -63,6 +63,10 @@ class ConfigurationStorage {
   }
 
   public async del(key: string): Promise<void> {
+    if (!this.isValidKey(key)) {
+      throw new Error('Invalid key');
+    }
+
     const keys: string[] = key.split('.');
     this.deleteDeeperValue(keys, this.data);
 
@@ -70,11 +74,14 @@ class ConfigurationStorage {
   }
 
   public async exists(key: string): Promise<boolean> {
-    await this.loadConfig();
+    if (!this.isValidKey(key)) {
+      throw new Error('Invalid key');
+    }
 
+    await this.loadConfig();
     const keys: string[] = key.split('.');
+
     return this.existsDeeperValue(keys, this.data);
-    //return !!this.data[key]
   }
 
   private async existsFolder(path: string): Promise<boolean> {
@@ -159,15 +166,11 @@ class ConfigurationStorage {
   }
 
   private isValidKey(key: string): boolean {
-    if (key.startsWith('.') || key.endsWith('.')) {
-      return false;
-    }
-
-    return true;
+    return !key.startsWith('.') && !key.endsWith('.');
   }
 
   private getDeeperValue(keys: string[], obj: any): any {
-    const [currentKey, ...keyRest] = keys;
+    const [currentKey, ...keyRest]: string[] = keys;
 
     if (typeof(obj) === 'object' && obj[currentKey] && keyRest.length) {
       return this.getDeeperValue(keyRest, obj[currentKey]);
@@ -178,8 +181,8 @@ class ConfigurationStorage {
     }
   }
 
-  private setDeeperValue(keys: string[], obj: any, value: any): any {
-    const [currentKey, ...keyRest] = keys;
+  private setDeeperValue(keys: string[], obj: any, value: any): void {
+    const [currentKey, ...keyRest]: string[] = keys;
 
     if (keyRest.length) {
       if (typeof(obj[currentKey]) !== 'object') {
@@ -193,7 +196,7 @@ class ConfigurationStorage {
   }
 
   private deleteDeeperValue(keys: string[], obj: any): any {
-    const [currentKey, ...keyRest] = keys;
+    const [currentKey, ...keyRest]: string[] = keys;
 
     if (keyRest.length) {
       if (typeof(obj[currentKey]) !== 'object') {
@@ -207,7 +210,7 @@ class ConfigurationStorage {
   }
 
   private existsDeeperValue(keys: string[], obj: any): boolean {
-    const [currentKey, ...keyRest] = keys;
+    const [currentKey, ...keyRest]: string[] = keys;
 
     if (keyRest.length) {
       if (obj.hasOwnProperty(currentKey)) {

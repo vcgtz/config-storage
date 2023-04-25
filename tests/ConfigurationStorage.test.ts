@@ -27,6 +27,18 @@ describe('Testing folder name parsing', () => {
     expect(storagePrototype.parseFolderName('      hello   world  ')).toBe('.hello-world');
   });
 
+  test('Checking is a key is valid', () => {
+    expect(storagePrototype.isValidKey('hello')).toBe(true);
+    expect(storagePrototype.isValidKey('hello.world')).toBe(true);
+    expect(storagePrototype.isValidKey('hello.world.fellows')).toBe(true);
+  });
+
+  test('Checking is a key is invalid', () => {
+    expect(storagePrototype.isValidKey('.hello')).toBe(false);
+    expect(storagePrototype.isValidKey('hello.world.')).toBe(false);
+    expect(storagePrototype.isValidKey('.hello.world.fellows.')).toBe(false);
+  });
+
   afterAll(async () => {
     await fsPromises.unlink(storage.path);
   });
