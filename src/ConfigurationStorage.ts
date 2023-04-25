@@ -140,7 +140,7 @@ class ConfigurationStorage {
   public async clean(): Promise<void> {
     this.data = {};
 
-    this.writeConfig();
+    await this.writeConfig();
   }
 
   /**
