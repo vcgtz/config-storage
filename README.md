@@ -1,5 +1,5 @@
 # config-storage
-A package to store your own persistent configurations in the host machine.
+:arrow_down: Package to save your own configuration persistently on your computer.
 
 ![npm](https://img.shields.io/npm/l/config-storage?color=blue)
 ![npm](https://img.shields.io/npm/v/config-storage?color=blue)
@@ -32,14 +32,29 @@ const userConfig = await ConfigurationStorage.getStorage('user_configuration');
 const paymentConfig = await ConfigurationStorage.getStorage('payment_configuration');
 ```
 
+---
+:exclamation: **IMPORTANT**
+
+For all of the following methods that expect a key, you can use **dot-notation** to refer to nested values. For instance, the key `DATABASES.mysql.hostname` refers to an object like:
+```js
+{
+  DATABASES: {
+    mysql: {
+      hostname: 'localhost'
+    }
+  }
+}
+```
+---
+
 ### :large_blue_circle: Storing values
-#### `set(key: string, value: string): Promise<void>`
+#### `set(key: string, value: any): Promise<void>`
 ```js
 await config.set('MAIN_KEY', 'GiQTZ8yKBcfuEnTFbs3TvcqoAsF6owLu');
 ```
 
 ### :large_blue_circle: Retrieving values
-#### `get(key: string): Promise<string | null>`
+#### `get(key: string): Promise<any>`
 It returns `null` if the key doesn't exist.
 ```js
 await config.get('MAIN_KEY');
