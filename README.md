@@ -3,6 +3,7 @@
 
 ![npm](https://img.shields.io/npm/l/config-storage?color=blue)
 ![npm](https://img.shields.io/npm/v/config-storage?color=blue)
+[![Node.js CI](https://github.com/vcgtz/config-storage/actions/workflows/node.js.yml/badge.svg?branch=main)](https://github.com/vcgtz/config-storage/actions/workflows/node.js.yml)
 
 ## Installation
 ```bash
