@@ -240,3 +240,56 @@ describe('Testing deleting existing values', () => {
     await fsPromises.unlink(storage.path);
   });
 });
+
+
+describe('Testing existance of values', () => {
+  let storage: ConfigurationStorage;
+
+  beforeEach(async () => {
+    storage = await ConfigurationStorage.getStorage('testing');
+    await storage.set('obj1', {
+      message: 'Hello World!',
+      pi: 3.1416,
+      obj2: {
+        nestedMessage: 'Hello World from far far away',
+        obj3: {
+          nestedPi: 3.14159,
+        },
+      },
+    });
+  });
+
+  test('Checking existence of a single value', async () => {
+    const key = 'obj1';
+
+    expect(await storage.exists(key)).toBe(true);
+  });
+
+  test('Checking existence of a nested value', async () => {
+    const key = 'obj1.message';
+
+    expect(await storage.exists(key)).toBe(true);
+  });
+
+  test('Checking existence of a deep nested value', async () => {
+    const key = 'obj1.obj2.obj3.nestedPi';
+
+    expect(await storage.exists(key)).toBe(true);
+  });
+
+  test('Checking existence of a not existing value', async () => {
+    const key = 'obj2';
+
+    expect(await storage.exists(key)).toBe(false);
+  });
+
+  test('Checking existence of a not existing nested value', async () => {
+    const key = 'obj2.obj20.obj29';
+
+    expect(await storage.exists(key)).toBe(false);
+  });
+
+  afterAll(async () => {
+    await fsPromises.unlink(storage.path);
+  });
+});

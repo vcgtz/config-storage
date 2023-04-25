@@ -72,7 +72,9 @@ class ConfigurationStorage {
   public async exists(key: string): Promise<boolean> {
     await this.loadConfig();
 
-    return !!this.data[key]
+    const keys: string[] = key.split('.');
+    return this.existsDeeperValue(keys, this.data);
+    //return !!this.data[key]
   }
 
   private async existsFolder(path: string): Promise<boolean> {
@@ -201,6 +203,20 @@ class ConfigurationStorage {
       this.deleteDeeperValue(keyRest, obj[currentKey]);
     } else {
       delete obj[currentKey];
+    }
+  }
+
+  private existsDeeperValue(keys: string[], obj: any): boolean {
+    const [currentKey, ...keyRest] = keys;
+
+    if (keyRest.length) {
+      if (obj.hasOwnProperty(currentKey)) {
+        return this.existsDeeperValue(keyRest, obj[currentKey]);
+      } else {
+        return false;
+      }
+    } else {
+      return obj[currentKey] !== undefined && obj[currentKey] != null;
     }
   }
 };
