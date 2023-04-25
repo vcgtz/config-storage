@@ -78,7 +78,7 @@ await config.del('MAIN_KEY');
 await config.exists('MAIN_KEY');
 ```
 
-### :large_blue_circle: Cleaning all the stored configuration.
+### :large_blue_circle: Cleaning all the stored configuration
 #### `clean(): Promise<void>`
 ```js
 await config.clean();
