@@ -63,9 +63,8 @@ class ConfigurationStorage {
   }
 
   public async del(key: string): Promise<void> {
-    if ((await this.exists(key))) {
-      delete this.data[key];
-    }
+    const keys: string[] = key.split('.');
+    this.deleteDeeperValue(keys, this.data);
 
     await this.writeConfig();
   }
@@ -188,6 +187,20 @@ class ConfigurationStorage {
       this.setDeeperValue(keyRest, obj[currentKey], value);
     } else {
       obj[currentKey] = value;
+    }
+  }
+
+  private deleteDeeperValue(keys: string[], obj: any): any {
+    const [currentKey, ...keyRest] = keys;
+
+    if (keyRest.length) {
+      if (typeof(obj[currentKey]) !== 'object') {
+        return;
+      }
+  
+      this.deleteDeeperValue(keyRest, obj[currentKey]);
+    } else {
+      delete obj[currentKey];
     }
   }
 };
