@@ -3,7 +3,7 @@ import path from 'path';
 import fsPromises from 'fs/promises'
 
 interface Configuration {
-  [key: string]: string;
+  [key: string]: any;
 }
 
 class ConfigurationStorage {
