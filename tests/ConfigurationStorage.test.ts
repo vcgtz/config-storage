@@ -241,6 +241,13 @@ describe('Testing deleting existing values', () => {
     expect(await storage.getAll()).toMatchObject(expectedObj);
   });
 
+  test('Cleaning all the stored configuration', async () => {
+    const expectedObj: any = {};
+
+    await storage.clean();
+    expect(await storage.getAll()).toMatchObject(expectedObj);
+  });
+
   afterAll(async () => {
     await fsPromises.unlink(storage.path);
   });

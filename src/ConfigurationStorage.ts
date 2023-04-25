@@ -133,6 +133,17 @@ class ConfigurationStorage {
   }
 
   /**
+   * Clean all the stored configuration.
+   * 
+   * @returns {Promise<void>}
+   */
+  public async clean(): Promise<void> {
+    this.data = {};
+
+    this.writeConfig();
+  }
+
+  /**
    * Check if a folder exists in a given path.
    * 
    * @param {string} path
