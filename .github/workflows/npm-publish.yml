@@ -5,7 +5,7 @@ name: NodeJS - Publish to NPM
 
 on:
   release:
-    types: [released]
+    types: [created]
 
 jobs:
   publish-npm:
