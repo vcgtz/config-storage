@@ -1,4 +1,4 @@
-import { expect, describe, test, beforeEach, afterAll } from '@jest/globals';
+import { expect, describe, test, beforeEach, afterAll, afterEach } from '@jest/globals';
 import ConfigurationStorage from '../src/ConfigurationStorage';
 import fsPromises from 'fs/promises';
 
@@ -37,6 +37,10 @@ describe('Testing folder name parsing', () => {
     expect(storagePrototype.isValidKey('.hello')).toBe(false);
     expect(storagePrototype.isValidKey('hello.world.')).toBe(false);
     expect(storagePrototype.isValidKey('.hello.world.fellows.')).toBe(false);
+  });
+
+  afterEach(async () => {
+    await storage.clean();
   });
 
   afterAll(async () => {
@@ -160,6 +164,69 @@ describe('Testing storing and retrieving data', () => {
     expect(await storage.get('message.nestedMessage2', 666)).toBe(666);
   });
 
+  afterEach(async () => {
+    await storage.clean();
+  });
+
+  afterAll(async () => {
+    await fsPromises.unlink(storage.path);
+  });
+});
+
+describe('Testing array storage', () => {
+  let storage: ConfigurationStorage;
+
+  beforeEach(async () => {
+    storage = await ConfigurationStorage.getStorage('testing');
+  });
+
+  test('Storing an array of numbers', async () => {
+    const key: string = 'my_array';
+    const value: number[] = [1, 2, 3, 4, 5];
+    const expectedObj: any = {
+      my_array: value,
+    };
+
+    await storage.set(key, value);
+
+    expect(await storage.getAll()).toMatchObject(expectedObj);
+  });
+
+  test('Storing a nested array of numbers', async () => {
+    const key: string = 'my_array.my_nested_array';
+    const value: number[] = [1, 2, 3, 4, 5];
+    const expectedObj: any = {
+      my_array: {
+        my_nested_array: value,
+      },
+    };
+
+    await storage.set(key, value);
+    console.log(await storage.getAll());
+    expect(await storage.getAll()).toMatchObject(expectedObj);
+    expect(await storage.get(`${key}.2`)).toBe(3);
+  });
+
+  test('Getting a nested values from an array', async () => {
+    const key: string = 'my_array.my_nested_array';
+    const value: any[] = [1, 2, 3, 4, { other_array: 'Hello from here!' }];
+    const expectedObj: any = {
+      my_array: {
+        my_nested_array: value,
+      },
+    };
+
+    await storage.set(key, value);
+
+    expect(await storage.getAll()).toMatchObject(expectedObj);
+    expect(await storage.get(`${key}.2`)).toBe(3);
+    expect(await storage.get(`${key}.4.other_array`)).toBe('Hello from here!');
+  });
+
+  afterEach(async () => {
+    await storage.clean();
+  });
+
   afterAll(async () => {
     await fsPromises.unlink(storage.path);
   });
@@ -248,6 +315,10 @@ describe('Testing deleting existing values', () => {
     expect(await storage.getAll()).toMatchObject(expectedObj);
   });
 
+  afterEach(async () => {
+    await storage.clean();
+  });
+
   afterAll(async () => {
     await fsPromises.unlink(storage.path);
   });
@@ -299,6 +370,10 @@ describe('Testing existance of values', () => {
     const key: string = 'obj2.obj20.obj29';
 
     expect(await storage.exists(key)).toBe(false);
+  });
+
+  afterEach(async () => {
+    await storage.clean();
   });
 
   afterAll(async () => {
