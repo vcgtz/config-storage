@@ -7,11 +7,11 @@ interface Configuration {
 }
 
 class ConfigurationStorage {
-  private homedirPath: string;
-  private configFilePath: string;
-  private configFolderName: string;
-  private configFolderPath: string;
-  private configFileName: string;
+  private readonly homedirPath: string;
+  private readonly configFilePath: string;
+  private readonly configFolderName: string;
+  private readonly configFolderPath: string;
+  private readonly configFileName: string;
   private data: Configuration;
 
   /**
