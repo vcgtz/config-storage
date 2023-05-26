@@ -14,10 +14,10 @@ npm i config-storage
 ### :large_blue_circle: Importing
 ```js
 // using require
-const ConfigurationStorage = require('config-storage').default;
+const { ConfigurationStorage } = require('config-storage');
 
 // using import
-import ConfigurationStorage from 'config-storage';
+import { ConfigurationStorage } from 'config-storage';
 ```
 
 ### :large_blue_circle: Initialization
